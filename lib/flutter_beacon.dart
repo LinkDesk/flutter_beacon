@@ -56,7 +56,15 @@ class FlutterBeacon {
 
   /// Initialize scanning API.
   Future<bool> get initializeScanning async {
-    return await _methodChannel.invokeMethod('initialize');
+    final result = await _methodChannel.invokeMethod('initialize');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
   }
 
   /// Initialize scanning API and check required permissions.
@@ -68,13 +76,31 @@ class FlutterBeacon {
   /// requestWhenInUse or requestAlways location services and check
   /// whether location services is enabled.
   Future<bool> get initializeAndCheckScanning async {
-    return await _methodChannel.invokeMethod('initializeAndCheck');
+    final result = await _methodChannel.invokeMethod('initializeAndCheck');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
+  }
+
+  /// Set the default AuthorizationStatus to use in requesting location authorization.
+  /// For iOS, this can be either [AuthorizationStatus.whenInUse] or [AuthorizationStatus.always].
+  /// For Android, this is not used.
+  ///
+  /// This method should be called very early to have an effect,
+  /// before any of the other initializeScanning or authorizationStatus getters.
+  ///
+  Future<bool> setLocationAuthorizationTypeDefault(AuthorizationStatus authorizationStatus) async {
+    return await _methodChannel.invokeMethod('setLocationAuthorizationTypeDefault', authorizationStatus.value);
   }
 
   /// Check for the latest [AuthorizationStatus] from device.
   ///
-  /// For Android, this will return between [AuthorizationStatus.allowed]
-  /// or [AuthorizationStatus.denied] only.
+  /// For Android, this will return [AuthorizationStatus.allowed], [AuthorizationStatus.denied] or [AuthorizationStatus.notDetermined].
   Future<AuthorizationStatus> get authorizationStatus async {
     final status = await _methodChannel.invokeMethod('authorizationStatus');
     return AuthorizationStatus.parse(status);
@@ -82,7 +108,15 @@ class FlutterBeacon {
 
   /// Return `true` when location service is enabled, otherwise `false`.
   Future<bool> get checkLocationServicesIfEnabled async {
-    return await _methodChannel.invokeMethod('checkLocationServicesIfEnabled');
+    final result = await _methodChannel.invokeMethod('checkLocationServicesIfEnabled');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
   }
 
   /// Check for the latest [BluetoothState] from device.
@@ -93,36 +127,76 @@ class FlutterBeacon {
 
   /// Request an authorization to the device.
   ///
-  /// For Android, this will request a permission of `Manifest.permission.ACCESS_COARSE_LOCATION`.
+  /// For Android, this will request a permission of `Manifest.permission.ACCESS_FINE_LOCATION`.
   /// For iOS, this will send a request `CLLocationManager#requestAlwaysAuthorization`.
   Future<bool> get requestAuthorization async {
-    return await _methodChannel.invokeMethod('requestAuthorization');
+    final result = await _methodChannel.invokeMethod('requestAuthorization');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
   }
 
   /// Request to open Bluetooth Settings from device.
   ///
   /// For iOS, this will does nothing because of private method.
   Future<bool> get openBluetoothSettings async {
-    return await _methodChannel.invokeMethod('openBluetoothSettings');
+    final result = await _methodChannel.invokeMethod('openBluetoothSettings');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
   }
 
   /// Request to open Locations Settings from device.
   ///
   /// For iOS, this will does nothing because of private method.
   Future<bool> get openLocationSettings async {
-    return await _methodChannel.invokeMethod('openLocationSettings');
+    final result = await _methodChannel.invokeMethod('openLocationSettings');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
   }
 
   /// Request to open Application Settings from device.
   ///
   /// For Android, this will does nothing.
   Future<bool> get openApplicationSettings async {
-    return await _methodChannel.invokeMethod('openApplicationSettings');
+    final result = await _methodChannel.invokeMethod('openApplicationSettings');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
   }
 
   /// Close scanning API.
   Future<bool> get close async {
-    return await _methodChannel.invokeMethod('close');
+    final result = await _methodChannel.invokeMethod('close');
+
+    if (result is bool) {
+      return result;
+    } else if (result is int) {
+      return result == 1;
+    }
+
+    return result;
   }
 
   /// Start ranging iBeacons with defined [List] of [Region]s.
@@ -160,7 +234,6 @@ class FlutterBeacon {
   }
 
   /// Start checking for location service authorization status changed.
-  /// This stream only enabled on iOS only.
   ///
   /// This will fires [AuthorizationStatus] whenever authorization status changed.
   Stream<AuthorizationStatus> authorizationStatusChanged() {
